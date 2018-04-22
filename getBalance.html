@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>残高を確認する</title>
+</head>
+<body>
+    <main>
+        <p>
+            <a href="./getAddress.html">アドレス作成</a>
+            <a href="./sendToAddress.html">送金</a>
+        </p>
+        <p>
+            <input type="text" name="bitcoinAddress" placeholder="ビットコインアドレス">
+        </p>
+        <p id="balance">残高</p>
+        <button type="button" id="getBalanceButton">残高を取得</button>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#getBalanceButton').click(function() {
+            $.ajax({
+                type: 'POST',
+                url: 'http://localhost:28332/getBalance/',
+                dataType: 'json',
+                data: {
+                    bitcoinAddress: $('input[name="bitcoinAddress"]').val()
+                }
+            }).done(function(res) {
+                $('#balance').text('残高: ' + res.balance + ' Satoshi');
+            }).fail(function(res) {
+                alert('Error');
+            });
+        });
+    });
+    </script>
+</body>
+</html>

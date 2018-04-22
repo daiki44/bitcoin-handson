@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ビットコインを送金する</title>
+</head>
+<body>
+    <main>
+        <p>
+            <a href="./getAddress.html">アドレス作成</a>
+            <a href="./getBalance.html">残高取得</a>
+        </p>
+        <p>
+            <input type="text" name="privateKey" placeholder="送金元の秘密鍵">
+        </p>
+        <p>
+            <input type="text" name="fromBitcoinAddress" placeholder="送金元のビットコインアドレス">
+        </p>
+        <p>
+            <input type="text" name="toBitcoinAddress" placeholder="送金先のビットコインアドレス">            
+        </p>
+        <p>
+            <input type="text" name="amount" placeholder="送金額">
+        </p>
+        <p id="txId">
+            TXID:
+        </p>
+        <p>
+            <button type="button" id="sendToAddressButton">送金</button>            
+        </p>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#sendToAddressButton').click(function() {
+            $.ajax({
+                type: 'POST',
+                url: 'http://localhost:28332/sendToAddress/',
+                dataType: 'json',
+                data: {
+                    privateKey: $('input[name="privateKey"]').val(),
+                    fromBitcoinAddress: $('input[name="fromBitcoinAddress"]').val(),
+                    toBitcoinAddress: $('input[name="toBitcoinAddress"]').val(),
+                    amount: $('input[name="amount"]').val()
+                }
+            }).done(function(res) {
+                if (res.code == 500) {
+                    alert('エラーが発生しました。');
+                    return false;
+                }
+
+                var txId = res.txId;
+                $('#txId').html('TXID: <a href="https://testnet.blockexplorer.com/tx/' + txId + '" target="_blank">' + txId + '</a>');
+            }).fail(function(res) {
+                alert('Error');
+            });
+        });
+    });
+    </script>
+</body>
+</html>
